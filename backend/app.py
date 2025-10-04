@@ -1171,6 +1171,76 @@ def get_notifications(user_id):
         if conn:
             conn.close()
 
+@app.route('/api/volunteer/match', methods=['POST'])
+def volunteer_ai_match():
+    """
+    志愿者AI智能匹配接口。
+    接收物品ID，返回与之匹配的物品列表。
+    """
+    data = request.json
+    item_id = data.get('itemID')
+    if not item_id:
+        return jsonify({'success': False, 'message': '缺少物品ID'}), 400
+    
+    conn = get_db_connection()
+    if not conn: return jsonify({'success': False, 'message': '数据库连接失败'}), 500
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute('SELECT * FROM "Items" WHERE "ItemID" = %s', (item_id,))
+        source_item_data = cursor.fetchone()
+        if not source_item_data:
+            return jsonify({'success': False, 'message': '物品不存在'}), 404
+        
+        columns = [desc[0] for desc in cursor.description]
+        source_item = dict(zip(columns, source_item_data))
+
+        source_item_type = source_item['ItemType']
+        target_item_type = 'Found' if source_item_type == 'Lost' else 'Lost'
+
+        source_item_desc = f"物品名: {source_item['ItemName']}, 类别: {source_item['Category']}, 颜色: {source_item['Color']}, 地点: {source_item['Location']}, 描述: {source_item['Description']}"
+        
+        cursor.execute('SELECT * FROM "Items" WHERE "ItemType" = %s AND "ItemStatus" = %s AND "UserID" <> %s', 
+                       (target_item_type, '未找到', source_item['UserID']))
+        target_items_data = cursor.fetchall()
+        
+        target_columns = [desc[0] for desc in cursor.description]
+        potential_matches = []
+
+        for target_item_tuple in target_items_data:
+            target_item = dict(zip(target_columns, target_item_tuple))
+            target_item_desc = f"物品名: {target_item['ItemName']}, 类别: {target_item['Category']}, 颜色: {target_item['Color']}, 地点: {target_item['Location']}, 描述: {target_item['Description']}"
+           
+            try:
+                if source_item_type == 'Lost':
+                    prompt_content = f"失物: {source_item_desc}\n拾物: {target_item_desc}"
+                else: # source_item_type is 'Found'
+                    prompt_content = f"失物: {target_item_desc}\n拾物: {source_item_desc}"
+
+                completion = llm_client.chat.completions.create(
+                    model="qwen-turbo",
+                    messages=[
+                        {'role': 'system', 'content': '你是一个失物招领匹配助手。请判断以下两个物品是否高度相似，只需要回答“是”或“否”。'},
+                        {'role': 'user', 'content': prompt_content}
+                    ],
+                    temperature=0
+                )
+                is_match = completion.choices[0].message.content
+                if '是' in is_match:
+                    potential_matches.append(target_item)
+
+            except Exception as llm_error:
+                print(f"LLM API call failed for item {target_item['ItemID']}: {llm_error}")
+                continue
+        
+        return jsonify({'success': True, 'matches': potential_matches})
+
+    except Exception as e:
+        print(f"AI Match error: {e}")
+        return jsonify({'success': False, 'message': 'AI匹配时发生服务器错误'}), 500
+    finally:
+        conn.close()
+
 @app.route('/api/volunteer/link', methods=['POST'])
 def volunteer_link_items():
     """
