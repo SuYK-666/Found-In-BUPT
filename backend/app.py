@@ -29,7 +29,7 @@ app.config['MAIL_PORT'] = 465
 app.config['MAIL_USE_SSL'] = True
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USERNAME'] = '18201588010@163.com'
-app.config['MAIL_PASSWORD'] = 'SDSStqxYjytYTLX9'
+app.config['MAIL_PASSWORD'] = 'RXkanHfnudDqFPpV'
 app.config['MAIL_DEFAULT_SENDER'] = ('校园失物招领平台', '18201588010@163.com')
 mail = Mail(app)
 
@@ -1265,4 +1265,5 @@ if __name__ == '__main__':
     """
     主程序入口，启动 Flask 服务。
     """
+
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8000)))
