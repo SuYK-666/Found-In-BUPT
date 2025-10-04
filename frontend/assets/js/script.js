@@ -1,7 +1,7 @@
 /* =========================
    全局常量与状态管理
    ========================= */
-const API_URL = `http://127.0.0.1:8000/api`;
+const API_URL = `https://found-in-bupt.onrender.com/api`;
 const DEFAULT_IMAGE_PATH = 'https://res.cloudinary.com/dypmjysm4/image/upload/v1759475859/background_meeqdz.jpg';
 
 
@@ -2229,4 +2229,5 @@ async function deleteItem(itemID) {
         showToast('请求失败，请检查您的网络连接。', false);
         console.error('Error deleting item:', err);
     }
+
 }
