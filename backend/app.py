@@ -938,7 +938,6 @@ def get_messages(lost_item_id, found_item_id):
     conn = get_db_connection()
     if not conn: return jsonify([]), 500
     cursor = conn.cursor()
-    # PostgreSQL 使用 %s 并为标识符加双引号
     sql = """
         SELECT m."MessageID", m."SenderID", u_sender."Username" as senderName, m."Content", m."SentTime"
         FROM "Messages" m
@@ -947,10 +946,17 @@ def get_messages(lost_item_id, found_item_id):
         ORDER BY m."SentTime" ASC
     """
     cursor.execute(sql, (lost_item_id, found_item_id))
-    messages = cursor.fetchall()
+
+    columns = [column[0] for column in cursor.description]
+    rows = cursor.fetchall()
+    messages = [dict(zip(columns, row)) for row in rows]
+    
     conn.close()
+    
     for msg in messages:
-        msg['SentTime'] = msg['SentTime'].isoformat()
+        if msg.get('SentTime'):
+            msg['SentTime'] = msg['SentTime'].isoformat()
+            
     return jsonify(messages)
 
 @app.route('/api/messages', methods=['POST'])
