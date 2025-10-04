@@ -2,7 +2,6 @@
 # 基础配置与初始化
 # =========================
 import os
-import pyodbc
 import uuid
 import json
 import threading
@@ -1349,4 +1348,5 @@ if __name__ == '__main__':
     """
     主程序入口，启动 Flask 服务。
     """
+
     app.run(host='0.0.0.0', port=8000, debug=False, threaded=True)
