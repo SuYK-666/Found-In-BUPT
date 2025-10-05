@@ -558,13 +558,19 @@ async function handleLogin(e) {
  */
 async function handleRegister(e) {
     e.preventDefault();
-    // 从表单元素中获取安全问题和答案
     const { username, password, confirmPassword, securityQuestion, securityAnswer } = e.target.elements;
+
+    // 前端基础验证
     if (password.value !== confirmPassword.value) {
-        // Bootstrap 的 invalid-feedback 不再使用，改用 showToast
         showToast('两次输入的密码不一致', false);
         return;
     }
+    if (!username.value || !password.value || !securityQuestion.value || !securityAnswer.value) {
+        // 这是您截图中遇到的情况，现在会由 showToast 处理
+        showToast('所有字段均为必填项', false);
+        return;
+    }
+
     try {
         const response = await fetch(`${API_URL}/register`, {
             method: 'POST',
@@ -577,11 +583,14 @@ async function handleRegister(e) {
             })
         });
         const data = await response.json();
-        showToast(data.message, response.ok); // 使用 toast 提示
+
+        showToast(data.message, response.ok);
+        
         if (response.ok) {
             setTimeout(() => window.location.href = 'login.html', 2000);
         }
     } catch (err) {
+        // 网络错误等异常情况也由 showToast 处理
         showToast('网络错误，注册失败', false);
     }
 }
@@ -2203,5 +2212,4 @@ async function deleteItem(itemID) {
         showToast('请求失败，请检查您的网络连接。', false);
         console.error('Error deleting item:', err);
     }
-
 }
