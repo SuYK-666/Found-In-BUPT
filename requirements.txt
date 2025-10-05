@@ -4,7 +4,6 @@ Werkzeug
 psycopg2-binary
 openai
 cloudinary
-Flask-Mail
 pytz
 gunicorn
 httpx==0.26.0
