@@ -590,25 +590,7 @@ async function handleRegister(e) {
  * 注册页面专用消息显示
  */
 function showRegisterMessage(message, isSuccess = true) {
-    let msgDiv = document.getElementById('register-success-msg');
-    if (!msgDiv) {
-        msgDiv = document.createElement('div');
-        msgDiv.id = 'register-success-msg';
-        msgDiv.style.marginTop = '16px';
-        msgDiv.style.textAlign = 'center';
-        const form = document.getElementById('register-form');
-        if (form && form.parentNode) {
-            form.parentNode.insertBefore(msgDiv, form.nextSibling);
-        }
-    }
-    msgDiv.textContent = message;
-    msgDiv.style.background = isSuccess ? '#22c55e' : '#ef4444';
-    msgDiv.style.color = '#fff';
-    msgDiv.style.padding = '10px 0';
-    msgDiv.style.borderRadius = '6px';
-    msgDiv.style.fontWeight = 'bold';
-    msgDiv.style.fontSize = '1rem';
-    msgDiv.style.display = 'block';
+    showToast(message, isSuccess);
 }
 
 /**
@@ -2221,4 +2203,5 @@ async function deleteItem(itemID) {
         showToast('请求失败，请检查您的网络连接。', false);
         console.error('Error deleting item:', err);
     }
+
 }
