@@ -596,13 +596,6 @@ async function handleRegister(e) {
 }
 
 /**
- * 注册页面专用消息显示
- */
-function showRegisterMessage(message, isSuccess = true) {
-    showToast(message, isSuccess);
-}
-
-/**
  * 退出登录
  */
 function handleLogout() {
@@ -2213,3 +2206,4 @@ async function deleteItem(itemID) {
         console.error('Error deleting item:', err);
     }
 }
+
