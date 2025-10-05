@@ -650,4 +650,6 @@ body {
 }
 .btn-purple:hover:not(:disabled) {
     background-color: #5a0eae; /* 定义悬停时更深的紫色 */
+    color: white; 
 }
+
