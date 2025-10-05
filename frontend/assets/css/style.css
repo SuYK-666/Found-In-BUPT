@@ -640,4 +640,14 @@ body {
     box-sizing: border-box;
     pointer-events: none; /* 防止遮挡鼠标事件 */
     text-shadow: 0 1px 2px #b45309; /* 文字阴影增加立体感 */
+
+}
+
+.btn-purple {
+    background-color: #6a11cb; /* 定义紫色背景 */
+    color: white;              /* 定义白色文字 */
+    border: none;
+}
+.btn-purple:hover:not(:disabled) {
+    background-color: #5a0eae; /* 定义悬停时更深的紫色 */
 }
