@@ -565,7 +565,7 @@ body {
     flex-grow: 1;
     min-height: 0; /* 关键属性，允许网格内部元素正确滚动 */
 }
-@media (min-width: 1280px) {
+@media (min-width: 80em) {
     .content-grid {
         grid-template-columns: repeat(2, 1fr); /* 桌面端两栏 */
     }
