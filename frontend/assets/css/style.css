@@ -191,8 +191,11 @@ body {
 }
 .item-card-image {
     width: 100%;
-    height: 12.5rem; /* 200px / 16 = 12.5rem */
-    object-fit: cover; /* 保证图片不变形 */
+    /* 移除固定的height，改用aspect-ratio定义宽高比 */
+    /* height: 12.5rem; */ 
+    aspect-ratio: 16 / 10; /* 定义一个16:10的宽高比，这是常见的卡片图片比例 */
+    object-fit: cover;     /* 确保图片能被裁剪以适应这个比例，而不会变形 */
+    background-color: #f3f4f6; /* 为图片区域添加一个占位背景色，防止加载时布局跳动 */
 }
 .item-card-content {
     padding: 1rem;
