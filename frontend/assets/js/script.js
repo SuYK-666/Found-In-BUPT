@@ -97,24 +97,28 @@ function handleLayoutScaling() {
         return;
     }
 
-    const pageContainer = document.querySelector('.page-container');
-    if (!pageContainer) return;
-
+    // 将缩放目标修改为 document.body
+    const scalableElement = document.body;
+    
     // 定义布局的设计宽度，当视口小于此宽度时开始缩放
     const designWidth = 1440; 
     const currentWidth = window.innerWidth;
 
     if (currentWidth < designWidth) {
-        // 计算缩放比例
         const scale = currentWidth / designWidth;
-        // 应用 transform scale 样式
-        pageContainer.style.transform = `scale(${scale})`;
-        // 同时调整高度以补偿缩放带来的空白
-        pageContainer.style.height = `calc(${100 / scale}vh - ${84 * (1 / scale)}px)`;
+        
+        // 应用 transform scale 样式，从左上角开始缩放
+        scalableElement.style.transform = `scale(${scale})`;
+        
+        // 关键：同时调整 body 的宽度和高度，使其缩放后的尺寸恰好填满视口
+        // 这样可以防止出现不必要的滚动条
+        scalableElement.style.width = `${100 / scale}vw`;
+        scalableElement.style.height = `${100 / scale}vh`;
     } else {
-        // 当视口宽度足够时，移除缩放效果
-        pageContainer.style.transform = 'none';
-        pageContainer.style.height = 'calc(100vh - 84px)';
+        // 当视口宽度足够时，恢复所有样式
+        scalableElement.style.transform = 'none';
+        scalableElement.style.width = '100%';
+        scalableElement.style.height = 'auto';
     }
 }
 
