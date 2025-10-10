@@ -47,8 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = 'index.html';
         return;
     }
+
+    // 修正：为每个页面分配合适的初始化函数
     const pageInitializers = {
-        'login.html': initializeMainPage,
+        'login.html': initializeLoginPage,
         'register.html': initializeRegisterPage,
         'index.html': initializeMainPage,
         'personal.html': initializePersonalPage,
@@ -63,11 +65,30 @@ document.addEventListener('DOMContentLoaded', () => {
     if (state.currentUser) {
         setupCommonUI();
     }
+    
     initializeAllMapModals();
     handleLayoutScaling();
-
 });
+
 window.addEventListener('resize', handleLayoutScaling);
+
+function initializeLoginPage() {
+    // 1. 设置验证码
+    setupLoginCaptcha(); 
+    
+    // 2. 绑定登录表单提交事件
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleLogin);
+    }
+}
+
+function initializeRegisterPage() {
+    const registerForm = document.getElementById('register-form');
+    if (registerForm) {
+        registerForm.addEventListener('submit', handleRegister);
+    }
+}
 
 function handleLayoutScaling() {
     // 仅在主页和志愿者页面执行此逻辑
@@ -278,8 +299,6 @@ function initializeMainPage() {
     renderFilters('found');
     fetchItems('Lost');
     fetchItems('Found');
-    
-    // 地图初始化调用已移至全局 DOMContentLoaded
 
     document.querySelectorAll('.btn-search').forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -300,20 +319,11 @@ function initializeMainPage() {
     document.body.addEventListener('click', (e) => {
         if (e.target.id === 'cancel-publish-btn') closeModal('publish-modal');
         if (e.target.id === 'cancel-claim-btn') closeModal('claim-modal');
-        if (e.target.id === 'register-form') handleRegister(e);
     });
     document.body.addEventListener('submit', (e) => {
         if (e.target.id === 'publish-form') handlePublish(e);
         if (e.target.id === 'claim-form') handleClaimSubmit(e);
     });
-
-    if (window.location.pathname.endsWith('login.html')) {
-        setupLoginCaptcha(); 
-        const loginForm = document.getElementById('login-form');
-        if (loginForm) {
-            loginForm.addEventListener('submit', handleLogin);
-        }
-    }
 }
 
 /**
@@ -342,6 +352,8 @@ function initializeRegisterPage() {
         registerForm.addEventListener('submit', handleRegister);
     }
 }
+
+
 
 /**
  * 初始化主页面（首页）
@@ -424,6 +436,15 @@ function initializePersonalPage() {
     document.getElementById('edit-username-form').addEventListener('submit', handleEditUsername);
     document.getElementById('edit-security-form').addEventListener('submit', handleUpdateSecurity);
     document.getElementById('edit-item-form').addEventListener('submit', handleItemUpdate);
+
+    // 将地图按钮的事件监听器移入此函数
+    const editMapBtn = document.getElementById('edit-map-btn');
+    if (editMapBtn) {
+        editMapBtn.addEventListener('click', () => {
+            state.mapFilterTarget = null; // 确保不是筛选模式
+            openMap('edit-map-modal');
+        });
+    }
 }
 
 /**
