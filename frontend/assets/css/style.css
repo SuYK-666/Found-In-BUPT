@@ -546,7 +546,13 @@ body {
     display: flex;
     flex-direction: column;
     /* 高度为视口高度减去头部导航栏的高度 (84px)，实现全屏效果 */
-    height: calc(100vh - 84px);
+    height: auto;
+}
+@media (min-width: 1280px) {
+    .page-container {
+        /* 恢复原有的固定高度，用于桌面端双栏布局 */
+        height: calc(100vh - 84px);
+    }
 }
 .content-grid {
     display: grid;
