@@ -19,6 +19,9 @@
 body {
     /* 设置一个跨平台兼容性好且美观的字体系列 */
     font-family: 'Helvetica Neue', Arial, 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    transform-origin: top left;
+    transition: transform 0.2s ease-in-out;
+    overflow-x: hidden;
 }
 
 /*
@@ -107,7 +110,11 @@ body {
 .header {
     background-color: var(--primary-color);
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    position: sticky;
+    /* * 修改：移除 position: sticky 属性。
+     * 当对整个页面进行 transform 缩放时，sticky 定位会失效。
+     * 由于页面整体被缩小以适应屏幕，头部始终可见，因此该功能不再是必需的。
+     */
+    /* position: sticky; */
     top: 0;
     z-index: 40;
 }
@@ -619,10 +626,7 @@ body {
 .page-container {
     display: flex;
     flex-direction: column;
-    /* 高度为视口高度减去头部导航栏的高度 (84px)，实现全屏效果 */
     height: calc(100vh - 84px);
-    transform-origin: top left;
-    transition: transform 0.2s ease-in-out;
 }
 .content-grid {
     display: grid;
