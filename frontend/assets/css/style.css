@@ -545,15 +545,16 @@ body {
 .page-container {
     display: flex;
     flex-direction: column;
-    /* 高度为视口高度减去头部导航栏的高度 (84px)，实现全屏效果 */
-    height: auto;
+    /* 保留 auto 高度，允许页面在小屏幕上整体可以滚动 */
+    height: auto; 
 }
+/* 仅在宽屏（>=1280px）时启用分栏全屏固定布局 */
 @media (min-width: 1280px) {
     .page-container {
-        /* 恢复原有的固定高度，用于桌面端双栏布局 */
         height: calc(100vh - 84px);
     }
 }
+
 .content-grid {
     display: grid;
     grid-template-columns: 1fr; /* 移动端单栏 */
@@ -566,20 +567,29 @@ body {
         grid-template-columns: repeat(2, 1fr); /* 桌面端两栏 */
     }
 }
+
 .content-panel {
     display: flex;
     flex-direction: column;
     min-height: 0; /* 内部滚动关键属性 */
 }
+
 .content-panel-header {
     flex-shrink: 0; /* 防止头部在flex布局中被压缩 */
 }
+
 /* 物品列表滚动容器 */
 .item-list-scroll-wrapper {
     flex-grow: 1; /* 占据所有可用的垂直空间 */
     overflow-y: auto; /* 内容超出时显示垂直滚动条 */
     margin-top: 1rem;
     padding: 0.25rem;
+    max-height: 55vh;
+}
+@media (min-width: 1280px) {
+    .item-list-scroll-wrapper {
+        max-height: none;
+    }
 }
 
 /* --- 搜索栏与筛选组 --- */
